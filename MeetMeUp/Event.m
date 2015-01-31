@@ -60,22 +60,37 @@
 
 - (void)getCommentsWithBlock:(void (^)(NSArray *))commentBlock
 {
+    if ([[[NSProcessInfo processInfo] environment] objectForKey:@"XCInjectBundle"])
+    {
+        // Get file name from event id
+        NSString *fileNameString = [NSString stringWithFormat:@"commentsData_%@", self.eventID];
+        // Get file path string from mainBundle
+        NSString *dataString = [[NSBundle mainBundle] pathForResource:fileNameString ofType:@""];
+        // Create NSData from file path string
+        NSData *data = [NSData dataWithContentsOfFile:dataString];
+        // Convert to json array
+        NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
+                                                              options:NSJSONReadingAllowFragments
+                                                                error:nil] objectForKey:@"results"];
+        commentBlock([Comment objectsFromArray:jsonArray]);
+    }
+    else
+    {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.meetup.com/2/event_comments?&sign=true&photo-host=public&event_id=%@&page=20&key=4b6a576833454113112e241936657e47",self.eventID]];
 
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.meetup.com/2/event_comments?&sign=true&photo-host=public&event_id=%@&page=20&key=4b6a576833454113112e241936657e47",self.eventID]];
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
-                               NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-                               
-                               NSArray *jsonArray = [dict objectForKey:@"results"];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
 
-                               commentBlock([Comment objectsFromArray:jsonArray]);
-                           }];
+                                   NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
 
+                                   NSArray *jsonArray = [dict objectForKey:@"results"];
+
+                                   commentBlock([Comment objectsFromArray:jsonArray]);
+                               }];
+    }
     
 }
 
@@ -107,13 +122,11 @@
 {
     if ([[[NSProcessInfo processInfo] environment] objectForKey:@"XCInjectBundle"])
     {
-        // small change
-
         // Get file path string from mainBundle
         NSString *dataString = [[NSBundle mainBundle] pathForResource:@"eventsData_mobile" ofType:@""];
         // Create NSData from file path string
         NSData *data = [NSData dataWithContentsOfFile:dataString];
-        // Convert to json array   //
+        // Convert to json array
         NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
                                                               options:NSJSONReadingAllowFragments
                                                                 error:nil] objectForKey:@"results"];
@@ -132,7 +145,6 @@
                                    NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
                                                                                          options:NSJSONReadingAllowFragments
                                                                                            error:nil] objectForKey:@"results"];
-
                                    complete([Event eventsFromArray:jsonArray]);
                                }];
     }

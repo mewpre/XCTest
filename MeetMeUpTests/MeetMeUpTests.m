@@ -36,6 +36,22 @@
     [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
+- (void)testGetCommentsWithBlock
+{
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Waiting for event array from JSON file"];
+    [Event performSearchWithKeyword:@"mobile" andComplete:^(NSArray *events) {
+        Event *secondEvent = events[1];
+        [secondEvent getCommentsWithBlock:^(NSArray *comments)
+        {
+            XCTAssert(comments.count == 1);
+            Comment *comment = [comments firstObject];
+            XCTAssert([comment.memberID intValue] == 99045732);
+        }];
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
+
 - (void)testAttendanceCountIncrement
 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Waiting for comments to return"];
