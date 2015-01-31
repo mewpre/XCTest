@@ -32,6 +32,23 @@
     return self;
 }
 
+- (void)setAttending:(BOOL)attending
+{
+    _attending = attending;
+    if (attending)
+    {
+        int intValue = [self.RSVPCount intValue];
+        self.RSVPCount = [NSNumber numberWithInt:intValue + 1];
+    }
+    else
+    {
+        int intValue = [self.RSVPCount intValue];
+        self.RSVPCount = [NSNumber numberWithInt:intValue - 1];
+
+    }
+}
+
+
 + (NSArray *)eventsFromArray:(NSArray *)incomingArray
 {
     NSMutableArray *newArray = [[NSMutableArray alloc] initWithCapacity:incomingArray.count];
