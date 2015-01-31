@@ -26,6 +26,16 @@
     [super tearDown];
 }
 
+- (void)testPerformSearchWithKeyword
+{
+    XCTestExpectation *expectation = [self expectationWithDescription:@"Waiting for event array from JSON file"];
+    [Event performSearchWithKeyword:@"mobile" andComplete:^(NSArray *events) {
+        XCTAssert(events.count == 15);
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+}
+
 - (void)testAttendanceCountIncrement
 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"Waiting for comments to return"];

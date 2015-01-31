@@ -104,10 +104,20 @@
 }
 
 + (void)performSearchWithKeyword:(NSString *)keyword andComplete:(void (^)(NSArray *))complete
-{    
+{
     if ([[[NSProcessInfo processInfo] environment] objectForKey:@"XCInjectBundle"])
     {
-        //Put stuff for step 1 here!!
+        // small change
+
+        // Get file path string from mainBundle
+        NSString *dataString = [[NSBundle mainBundle] pathForResource:@"eventsData_mobile" ofType:@""];
+        // Create NSData from file path string
+        NSData *data = [NSData dataWithContentsOfFile:dataString];
+        // Convert to json array   //
+        NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
+                                                              options:NSJSONReadingAllowFragments
+                                                                error:nil] objectForKey:@"results"];
+        complete([Event eventsFromArray:jsonArray]);
     }
     else
     {
