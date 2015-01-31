@@ -120,7 +120,7 @@
 			children = (
 				23D10C1F19BDF342001F060E /* AppDelegate.h */,
 				23D10C2019BDF342001F060E /* AppDelegate.m */,
-				23D10C2519BDF342001F060E /* Main.storyboard */,
+				602809B71A7D5EC400438A03 /* Storyboard */,
 				23D10C2219BDF342001F060E /* ViewController.h */,
 				23D10C2319BDF342001F060E /* ViewController.m */,
 				23D10C3E19BDFF1C001F060E /* EventDetailViewController.h */,
@@ -182,6 +182,14 @@
 				23D10C4B19BE0DF5001F060E /* Comment.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		602809B71A7D5EC400438A03 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				23D10C2519BDF342001F060E /* Main.storyboard */,
+			);
+			name = Storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
