@@ -79,12 +79,10 @@
 {
     if ([[[NSProcessInfo processInfo] environment] objectForKey:@"XCInjectBundle"])
     {
-        // Get file name from event id
-        NSString *fileNameString = [NSString stringWithFormat:@"commentsData_%@", self.eventID];
         // Get file path string from mainBundle
-        NSString *dataString = [[NSBundle mainBundle] pathForResource:fileNameString ofType:@""];
+        NSURL *dataURL = [self fileURLForEventDataWithEventID:self.eventID];
         // Create NSData from file path string
-        NSData *data = [NSData dataWithContentsOfFile:dataString];
+        NSData *data = [NSData dataWithContentsOfURL:dataURL];
         // Convert to json array
         NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
                                                               options:NSJSONReadingAllowFragments
@@ -140,9 +138,9 @@
     if ([[[NSProcessInfo processInfo] environment] objectForKey:@"XCInjectBundle"])
     {
         // Get file path string from mainBundle
-        NSString *dataString = [[NSBundle mainBundle] pathForResource:@"eventsData_mobile" ofType:@""];
+        NSURL *dataURL = [self fileURLForCommentsForKeyword:keyword];
         // Create NSData from file path string
-        NSData *data = [NSData dataWithContentsOfFile:dataString];
+        NSData *data = [NSData dataWithContentsOfURL:dataURL];
         // Convert to json array
         NSArray *jsonArray = [[NSJSONSerialization JSONObjectWithData:data
                                                               options:NSJSONReadingAllowFragments
